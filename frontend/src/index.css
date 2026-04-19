@@ -1,0 +1,192 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── CSS Variables (Light) ────────────────────────────────── */
+:root {
+  --bg:          #f5f5f5;
+  --bg-raised:   #ffffff;
+  --bg-subtle:   #eeeeee;
+  --border:      #e0e0e0;
+  --border-soft: #ebebeb;
+  --text-primary:   #1a1a1a;
+  --text-secondary: #555555;
+  --text-muted:     #888888;
+  --text-label:     #999999;
+  --btn-bg:         #1a1a1a;
+  --btn-text:       #ffffff;
+  --btn-bg-hover:   #333333;
+  --btn-outline-bg: #ffffff;
+  --btn-outline-border: #d8d8d8;
+  --btn-outline-hover:  #f0f0f0;
+  --input-bg:    #f0f0f0;
+  --input-border:#e0e0e0;
+  --input-focus: #555555;
+  --algo-active-bg:     #1a1a1a;
+  --algo-active-border: #1a1a1a;
+  --algo-active-text:   #ffffff;
+  --algo-active-text-sec: rgba(255, 255, 255, 0.7);
+  --algo-active-text-muted: rgba(255, 255, 255, 0.5);
+  --tag-bg:     #1a1a1a;
+  --tag-text:   #ffffff;
+  --best-bg:    #f0f5f0;
+  --best-text:  #2d6a2d;
+  --best-border:#c0dcc0;
+  --scrollbar-thumb: #cccccc;
+  --shadow-card:  0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-panel: 0 4px 16px rgba(0,0,0,0.09), 0 1px 3px rgba(0,0,0,0.05);
+  --chart-color-1: #3b82f6; /* Blue */
+  --chart-color-2: #f59e0b; /* Amber */
+  --chart-color-3: #10b981; /* Emerald */
+  --chart-color-4: #8b5cf6; /* Violet */
+}
+
+
+/* ── CSS Variables (Dark — warm gray, not black) ─────────── */
+.dark {
+  --bg:          #232323;
+  --bg-raised:   #2c2c2c;
+  --bg-subtle:   #292929;
+  --border:      #3a3a3a;
+  --border-soft: #323232;
+  --text-primary:   #e8e8e8;
+  --text-secondary: #b0b0b0;
+  --text-muted:     #808080;
+  --text-label:     #707070;
+  --btn-bg:         #e8e8e8;
+  --btn-text:       #1a1a1a;
+  --btn-bg-hover:   #d0d0d0;
+  --btn-outline-bg:     #2c2c2c;
+  --btn-outline-border: #3e3e3e;
+  --btn-outline-hover:  #353535;
+  --input-bg:    #272727;
+  --input-border:#3a3a3a;
+  --input-focus: #a0a0a0;
+  --algo-active-bg:     #e8e8e8;
+  --algo-active-border: #e8e8e8;
+  --algo-active-text:   #1a1a1a;
+  --algo-active-text-sec: rgba(26, 26, 26, 0.7);
+  --algo-active-text-muted: rgba(26, 26, 26, 0.5);
+  --tag-bg:     #e8e8e8;
+  --tag-text:   #1a1a1a;
+  --best-bg:    #2e332e;
+  --best-text:  #7fbf7f;
+  --best-border:#3a4a3a;
+  --scrollbar-thumb: #444444;
+  --shadow-card:  0 1px 3px rgba(0,0,0,0.25), 0 1px 2px rgba(0,0,0,0.2);
+  --shadow-panel: 0 4px 16px rgba(0,0,0,0.35), 0 1px 3px rgba(0,0,0,0.2);
+  --chart-color-1: #60a5fa; /* Light Blue */
+  --chart-color-2: #fbbf24; /* Light Amber */
+  --chart-color-3: #34d399; /* Light Emerald */
+  --chart-color-4: #c084fc; /* Light Violet */
+}
+
+
+/* ── Resets ───────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background-color: var(--bg);
+  color: var(--text-primary);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ── Scrollbar ────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 10px; }
+
+/* ── Card ─────────────────────────────────────────────────── */
+.card {
+  background-color: var(--bg-raised);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+.card:hover {
+  box-shadow: var(--shadow-panel);
+}
+
+/* ── Labels ───────────────────────────────────────────────── */
+.section-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-label);
+}
+
+/* ── Buttons ──────────────────────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: var(--btn-bg);
+  color: var(--btn-text);
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+  font-family: inherit;
+}
+.btn-primary:hover:not(:disabled) { background-color: var(--btn-bg-hover); }
+.btn-primary:active:not(:disabled) { transform: scale(0.98); }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: var(--btn-outline-bg);
+  color: var(--text-primary);
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid var(--btn-outline-border);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+  font-family: inherit;
+}
+.btn-secondary:hover:not(:disabled) { background-color: var(--btn-outline-hover); }
+.btn-secondary:active:not(:disabled) { transform: scale(0.98); }
+.btn-secondary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── Input fields ─────────────────────────────────────────── */
+.input-field {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--input-border);
+  background-color: var(--input-bg);
+  padding: 10px 14px;
+  font-size: 13.5px;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.2s ease;
+  font-family: inherit;
+}
+.input-field::placeholder { color: var(--text-label); }
+.input-field:hover { border-color: var(--text-muted); }
+.input-field:focus {
+  border-color: var(--input-focus);
+  background-color: var(--bg-raised);
+  box-shadow: 0 0 0 3px rgba(128,128,128,0.15);
+}
+
+/* ── Animations ───────────────────────────────────────────── */
+@keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes spin    { to { transform: rotate(360deg); } }
+
+.animate-fade-in  { animation: fadeIn  0.3s ease-out; }
+.animate-slide-up { animation: slideUp 0.35s ease-out; }
+.animate-spin-fast { animation: spin 0.65s linear infinite; }
