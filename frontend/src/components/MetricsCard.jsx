@@ -8,7 +8,7 @@ const VARIANTS = {
 
 export default function MetricsCard({ icon, label, value, unit }) {
   return (
-    <div className="card" style={{ padding: 16, display: "flex", flexDirection: "column", gap: 12 }}>
+    <div className="card metrics-card-animated" style={{ padding: 16, display: "flex", flexDirection: "column", gap: 12 }}>
       {/* Icon */}
       <div style={{
         display: "flex", alignItems: "center", justifyContent: "center",
