@@ -47,7 +47,8 @@ When the needle hits a dot, a **circular ripple** expands outwards.
 ## 🔥 4. The Starvation Heatmap (The Warning System)
 This is the most important educational feature. It shows if an algorithm is being "unfair."
 
-*   **The Aging Logic:** As a blue dot waits longer and longer, it starts to get "hot." It turns from **Blue** ➡️ **Orange** ➡️ **Deep Red**.
+*   **The Aging Logic:** As a blue dot waits longer and longer, it starts to get "hot." It turns from **Blue** ➡️ **Purple** ➡️ **Orange** ➡️ **Deep Red**.
+*   **🟣 Purple (The Warning Phase):** This represents the "Middle Age" of a request. It hasn't reached starvation yet, but the algorithm is starting to neglect it.
 *   **⚠️ STARVING Label:** If a dot turns deep red and starts **pulsating**, it means it has been waiting too long.
 *   **Presentation Tip:** Use this to show that even if an algorithm is "fast," it might be "unfair" to requests that are far away.
 
