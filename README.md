@@ -37,6 +37,7 @@ disk-scheduling-simulator/
 │   │   │   └── api.js                # API calls to backend
 │   │   ├── App.jsx                   # Main app component
 │   │   ├── main.jsx                  # React entry point
+│   │   ├── index.css                 # Tailwind + custom styles
 │   │   └── index.css                 # Tailwind + custom styles
 │   ├── index.html
 │   ├── vite.config.js                # Vite config with API proxy
@@ -196,6 +197,3 @@ npm start
 cd frontend
 npm install
 npm run dev
-
-
-

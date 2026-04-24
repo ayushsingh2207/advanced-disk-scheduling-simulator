@@ -3,6 +3,7 @@ const sstf = require("../algorithms/sstf");
 const scan = require("../algorithms/scan");
 const cscan = require("../algorithms/cscan");
 const computeMetrics = require("../utils/metrics");
+const getAIInsights = require("../utils/aiAnalyzer");
 
 // Map of algorithm names to their functions
 const ALGORITHMS = { fcfs, sstf, scan, cscan };
@@ -34,20 +35,30 @@ exports.simulate = (req, res) => {
         .status(400)
         .json({ error: `Invalid algorithm. Choose from: ${Object.keys(ALGORITHMS).join(", ")}` });
     }
-    if (requests.some((r) => typeof r !== "number" || r < 0 || r > maxTrack)) {
+
+    // Normalized requests: Ensure all items are { track, arrivalTime }
+    const normalizedRequests = requests.map((r) => {
+      if (typeof r === "number") return { track: r, arrivalTime: 0 };
+      return { 
+        track: typeof r.track === "number" ? r.track : r, 
+        arrivalTime: typeof r.arrivalTime === "number" ? r.arrivalTime : 0 
+      };
+    });
+
+    if (normalizedRequests.some((r) => typeof r.track !== "number" || r.track < 0 || r.track > maxTrack)) {
       return res
         .status(400)
-        .json({ error: `All requests must be numbers between 0 and ${maxTrack}.` });
+        .json({ error: `All requests must be tracks between 0 and ${maxTrack}.` });
     }
 
     // ── Run algorithm ──────────────────────────────────
     let result;
     if (algorithm === "scan") {
-      result = scan(requests, head, direction, maxTrack);
+      result = scan(normalizedRequests, head, direction, maxTrack);
     } else if (algorithm === "cscan") {
-      result = cscan(requests, head, maxTrack);
+      result = cscan(normalizedRequests, head, maxTrack);
     } else {
-      result = ALGORITHMS[algorithm](requests, head);
+      result = ALGORITHMS[algorithm](normalizedRequests, head);
     }
 
     // ── Compute metrics ────────────────────────────────
@@ -56,12 +67,13 @@ exports.simulate = (req, res) => {
     return res.json({
       algorithm: algorithm.toUpperCase(),
       head,
-      requests,
+      requests: normalizedRequests,
       direction: algorithm === "scan" ? direction : undefined,
       maxTrack,
       sequence: result.sequence,
       seekTimes: result.seekTimes,
       ...metrics,
+      aiInsights: getAIInsights(algorithm, metrics),
     });
   } catch (err) {
     console.error("Simulation error:", err);
@@ -87,25 +99,35 @@ exports.compare = (req, res) => {
       return res.status(400).json({ error: "Please provide a valid head position (>= 0)." });
     }
 
+    const normalizedRequests = requests.map((r) => {
+      if (typeof r === "number") return { track: r, arrivalTime: 0 };
+      return { 
+        track: typeof r.track === "number" ? r.track : r, 
+        arrivalTime: typeof r.arrivalTime === "number" ? r.arrivalTime : 0 
+      };
+    });
+
     const results = {};
 
     for (const [name, fn] of Object.entries(ALGORITHMS)) {
       let result;
       if (name === "scan") {
-        result = fn(requests, head, direction, maxTrack);
+        result = fn(normalizedRequests, head, direction, maxTrack);
       } else if (name === "cscan") {
-        result = fn(requests, head, maxTrack);
+        result = fn(normalizedRequests, head, maxTrack);
       } else {
-        result = fn(requests, head);
+        result = fn(normalizedRequests, head);
       }
+      const metrics = computeMetrics(result);
       results[name.toUpperCase()] = {
         sequence: result.sequence,
         seekTimes: result.seekTimes,
-        ...computeMetrics(result),
+        ...metrics,
+        aiInsights: getAIInsights(name, metrics),
       };
     }
 
-    return res.json({ head, requests, maxTrack, results });
+    return res.json({ head, requests: normalizedRequests, maxTrack, results });
   } catch (err) {
     console.error("Comparison error:", err);
     return res.status(500).json({ error: "Internal server error." });

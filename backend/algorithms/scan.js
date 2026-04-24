@@ -11,40 +11,56 @@
  * @param {number}   maxTrack   - Maximum track number on the disk (e.g. 199)
  * @returns {{ sequence: number[], seekTimes: number[], totalSeekTime: number }}
  */
+/**
+ * SCAN — Elevator Disk Scheduling Algorithm (Time-Aware)
+ *
+ * @param {Array<{track: number, arrivalTime: number}>} requests - Disk requests
+ * @param {number} head - Initial head position
+ * @param {string} direction - Initial direction: "left" or "right"
+ * @param {number} maxTrack - Maximum track number
+ * @returns {{ sequence: number[], seekTimes: number[], totalSeekTime: number, endTime: number }}
+ */
 function scan(requests, head, direction = "right", maxTrack = 199) {
-  const left = requests.filter((r) => r < head).sort((a, b) => a - b);
-  const right = requests.filter((r) => r >= head).sort((a, b) => a - b);
-
   const sequence = [head];
   const seekTimes = [];
   let totalSeekTime = 0;
   let currentPos = head;
+  let currentTime = 0;
 
-  const addMove = (track) => {
+  const left = requests.filter((r) => r.track < head).sort((a, b) => a.track - b.track);
+  const right = requests.filter((r) => r.track >= head).sort((a, b) => a.track - b.track);
+
+  const addMove = (track, arrivalTime = 0) => {
+    // If we're servicing a specific request, we might need to wait for its arrival
+    if (currentTime < arrivalTime) {
+      currentTime = arrivalTime;
+    }
+
     const seekTime = Math.abs(track - currentPos);
     sequence.push(track);
     seekTimes.push(seekTime);
     totalSeekTime += seekTime;
     currentPos = track;
+    currentTime += seekTime;
   };
 
   if (direction === "right") {
-    // Serve all requests to the right first
-    right.forEach((track) => addMove(track));
-    // Go to end of disk
+    // Right side
+    right.forEach((r) => addMove(r.track, r.arrivalTime));
+    // Boundary
     if (currentPos !== maxTrack) addMove(maxTrack);
-    // Then serve all requests to the left (in reverse)
-    left.reverse().forEach((track) => addMove(track));
+    // Left side (reverse)
+    [...left].reverse().forEach((r) => addMove(r.track, r.arrivalTime));
   } else {
-    // Serve all requests to the left first (in reverse order)
-    left.reverse().forEach((track) => addMove(track));
-    // Go to beginning of disk
+    // Left side
+    [...left].reverse().forEach((r) => addMove(r.track, r.arrivalTime));
+    // Boundary
     if (currentPos !== 0) addMove(0);
-    // Then serve all requests to the right
-    right.forEach((track) => addMove(track));
+    // Right side
+    right.forEach((r) => addMove(r.track, r.arrivalTime));
   }
 
-  return { sequence, seekTimes, totalSeekTime };
+  return { sequence, seekTimes, totalSeekTime, endTime: currentTime };
 }
 
 module.exports = scan;

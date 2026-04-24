@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disk Scheduling Simulator - System Flow Diagram</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 1400px;
+            width: 100%;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+            font-style: italic;
+        }
+        
+        .diagram-wrapper {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+        
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .legend-item {
+            padding: 15px;
+            border-left: 4px solid #667eea;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .legend-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .legend-description {
+            color: #666;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+        
+        .footer {
+            text-align: center;
+            color: #999;
+            margin-top: 30px;
+            font-size: 0.9em;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🖥️ Disk Scheduling Simulator</h1>
+        <p class="subtitle">Complete System Flow Diagram - Architecture & Data Flow</p>
+        
+        <div class="diagram-wrapper">
+            <div class="mermaid">
+graph TD
+    A["👤 User Input"] --> B["📋 Input Panel Component"]
+    B --> C{Select Mode}
+    
+    C -->|Single Algorithm| D["Select One Algorithm<br/>FCFS/SSTF/SCAN/C-SCAN"]
+    C -->|Compare| E["Compare All Algorithms"]
+    
+    D --> F["Package Request<br/>Disk Tracks, Head Position"]
+    E --> F
+    
+    F --> G["POST /api/simulate<br/>or<br/>POST /api/compare"]
+    
+    G --> H["Backend Express Server"]
+    H --> I["Scheduling Routes"]
+    I --> J["Scheduling Controller"]
+    
+    J --> K{Validate Input}
+    K -->|Invalid| L["Return Error"]
+    L --> M["Display Error Message"]
+    
+    K -->|Valid| N["Select Algorithm<br/>Module"]
+    
+    N --> O["FCFS Algorithm<br/>Process in Order"]
+    N --> P["SSTF Algorithm<br/>Shortest Seek First"]
+    N --> Q["SCAN Algorithm<br/>Elevator Sweep"]
+    N --> R["C-SCAN Algorithm<br/>Circular Sweep"]
+    
+    O --> S["Compute Seek Sequence"]
+    P --> S
+    Q --> S
+    R --> S
+    
+    S --> T["Calculate Metrics<br/>Total Seek Time<br/>Average Seek Time<br/>Variance, Throughput"]
+    
+    T --> U["Package JSON Response<br/>Algorithm Results + Metrics"]
+    
+    U --> V["HTTP Response<br/>200 OK"]
+    
+    V --> W["Frontend Receives Data"]
+    W --> X{Render Mode}
+    
+    X -->|Single Result| Y["Results Panel<br/>Single View"]
+    X -->|Comparison| Z["Results Panel<br/>Comparison View"]
+    
+    Y --> AA["Display Metrics Card"]
+    Z --> AA
+    
+    AA --> AB["Disk Chart Component<br/>Plot Seek Sequence"]
+    
+    AB --> AC["📊 Visualize Head Movement<br/>Interactive Chart"]
+    
+    AC --> AD["✅ Present Final Results<br/>to User"]
+    
+    style A fill:#e1f5ff
+    style B fill:#f3e5f5
+    style D fill:#fff3e0
+    style E fill:#fff3e0
+    style F fill:#f1f8e9
+    style G fill:#ffe0b2
+    style H fill:#ffccbc
+    style I fill:#ffccbc
+    style J fill:#ffccbc
+    style K fill:#ffab91
+    style L fill:#ef9a9a
+    style M fill:#ef9a9a
+    style N fill:#ffccbc
+    style O fill:#ffe082
+    style P fill:#ffe082
+    style Q fill:#ffe082
+    style R fill:#ffe082
+    style S fill:#c5e1a5
+    style T fill:#a5d6a7
+    style U fill:#81c784
+    style V fill:#66bb6a
+    style W fill:#4db6ac
+    style X fill:#4db6ac
+    style Y fill:#64b5f6
+    style Z fill:#64b5f6
+    style AA fill:#42a5f5
+    style AB fill:#2196f3
+    style AC fill:#1e88e5
+    style AD fill:#1565c0
+            </div>
+        </div>
+        
+        <h2 style="color: #333; margin-bottom: 20px; font-size: 1.8em;">📌 System Components Overview</h2>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-title">🎨 Frontend (React + Vite)</div>
+                <div class="legend-description">Handles user input, component rendering, and visualization of results. Communicates with backend via REST API.</div>
+            </div>
+            
+            <div class="legend-item">
+                <div class="legend-title">🌐 Network Layer</div>
+                <div class="legend-description">HTTP POST requests to /api/simulate or /api/compare. Returns JSON with results and metrics.</div>
+            </div>
+            
+            <div class="legend-item">
+                <div class="legend-title">⚙️ Backend (Node.js + Express)</div>
+                <div class="legend-description">Processes requests, validates inputs, selects and executes algorithms, computes metrics.</div>
+            </div>
+            
+            <div class="legend-item">
+                <div class="legend-title">🔄 Algorithms (4 Types)</div>
+                <div class="legend-description">FCFS, SSTF, SCAN, C-SCAN - Each implements disk head movement logic independently.</div>
+            </div>
+            
+            <div class="legend-item">
+                <div class="legend-title">📊 Metrics Engine</div>
+                <div class="legend-description">Calculates performance metrics: seek time, average time, variance, standard deviation, throughput.</div>
+            </div>
+            
+            <div class="legend-item">
+                <div class="legend-title">📈 Visualization</div>
+                <div class="legend-description">Displays results in single or comparison view with interactive charts and metric cards.</div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><strong>Disk Scheduling Simulator Project Report</strong></p>
+            <p>System Flow Diagram | Architecture & Data Flow Visualization</p>
+            <p>Generated: April 2026</p>
+        </div>
+    </div>
+    
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+        mermaid.contentLoaded();
+    </script>
+</body>
+</html>

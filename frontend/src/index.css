@@ -39,6 +39,9 @@
   --chart-color-2: #f59e0b; /* Amber */
   --chart-color-3: #10b981; /* Emerald */
   --chart-color-4: #8b5cf6; /* Violet */
+  --accent-glow: rgba(59, 130, 246, 0.5);
+  --thinking-glow: rgba(250, 204, 21, 0.4);
+  --success-glow: rgba(34, 197, 94, 0.4);
 }
 
 
@@ -79,6 +82,9 @@
   --chart-color-2: #fbbf24; /* Light Amber */
   --chart-color-3: #34d399; /* Light Emerald */
   --chart-color-4: #c084fc; /* Light Violet */
+  --accent-glow: rgba(96, 165, 250, 0.4);
+  --thinking-glow: rgba(251, 191, 36, 0.3);
+  --success-glow: rgba(52, 211, 153, 0.3);
 }
 
 
@@ -198,3 +204,60 @@ body {
 .animate-fade-in  { animation: fadeIn  0.3s ease-out; }
 .animate-slide-up { animation: slideUp 0.35s ease-out; }
 .animate-spin-fast { animation: spin 0.65s linear infinite; }
+
+/* Neural Path Animations */
+@keyframes ripple-out {
+  0% { transform: scale(0.5); opacity: 0.8; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+.ripple-effect {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--success-glow);
+  pointer-events: none;
+  animation: ripple-out 0.6s ease-out forwards;
+  z-index: 10;
+}
+
+@keyframes glow-pulse {
+  0%, 100% { filter: drop-shadow(0 0 2px var(--accent-glow)); }
+  50% { filter: drop-shadow(0 0 8px var(--accent-glow)); }
+}
+
+.glow-trail {
+  filter: drop-shadow(0 0 4px var(--accent-glow));
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@keyframes thinking-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+}
+
+.thinking-bubble {
+  animation: thinking-pulse 1.5s infinite ease-in-out;
+}
+
+.path-trace {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: draw-path 1.5s ease-out forwards;
+}
+
+@keyframes draw-path {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes starvation-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); transform: translate(-50%, -50%) scale(1); }
+  70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); transform: translate(-50%, -50%) scale(1.1); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); transform: translate(-50%, -50%) scale(1); }
+}
+
+.starving {
+  animation: starvation-pulse 2s infinite;
+  border-color: #ef4444 !important;
+  background-color: #7f1d1d !important;
+}

@@ -1,5 +1,6 @@
 import MetricsCard from "./MetricsCard";
 import DiskChart from "./DiskChart";
+import { Sparkles, Trophy } from "lucide-react";
 
 /* ── Single Algorithm View ──────────────────────────────── */
 function SingleResult({ data }) {
@@ -31,6 +32,19 @@ function SingleResult({ data }) {
         <MetricsCard icon="±" label="Std Deviation" value={data.standardDeviation}  unit="tracks"    />
         <MetricsCard icon="⚡" label="Throughput"   value={data.throughput}         unit="req/track" />
       </div>
+
+      {/* AI Insights Card */}
+      {data.aiInsights && (
+        <div className="card border-l-4 border-l-purple-500 bg-purple-50/10" style={{ padding: 20 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+            <Sparkles size={18} className="text-purple-400" />
+            <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>AI Expert Insights</span>
+          </div>
+          <p style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.6, fontStyle: "italic" }}>
+            "{data.aiInsights}"
+          </p>
+        </div>
+      )}
 
       {/* Chart */}
       <DiskChart results={data} isComparison={false} />
@@ -84,6 +98,17 @@ function ComparisonResult({ data }) {
           All algorithms · Head at{" "}
           <strong style={{ color: "var(--text-primary)" }}>{data.head}</strong>
         </span>
+      </div>
+
+      {/* Winner Summary (AI) */}
+      <div className="card bg-green-50/10 border-l-4 border-l-green-500" style={{ padding: 20 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+          <Trophy size={18} className="text-yellow-400" />
+          <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Comparison Summary</span>
+        </div>
+        <p style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.6 }}>
+          The <span className="text-green-400 font-bold">{algNames.find(a => data.results[a].totalSeekTime === bestSeek)}</span> algorithm was most efficient with a total seek time of {bestSeek} tracks.
+        </p>
       </div>
 
       {/* Chart */}

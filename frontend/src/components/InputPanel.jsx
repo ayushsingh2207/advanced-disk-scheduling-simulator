@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const ALGORITHMS = [
   { id: "fcfs",  label: "FCFS",   name: "First Come First Served",  desc: "Requests served in arrival order" },
@@ -7,20 +7,76 @@ const ALGORITHMS = [
   { id: "cscan", label: "C-SCAN", name: "Circular SCAN",            desc: "One-directional sweep, resets at end" },
 ];
 
-export default function InputPanel({ onSimulate, onCompare, loading }) {
-  const [requests,  setRequests]  = useState("98, 183, 37, 122, 14, 124, 65, 67");
-  const [head,      setHead]      = useState("53");
+const PRESETS = [
+  { 
+    id: "random", 
+    label: "Random I/O", 
+    requests: "98:0, 183:5, 37:10, 122:15, 14:20, 124:25, 65:30, 67:35",
+    head: "53"
+  },
+  { 
+    id: "db", 
+    label: "Database", 
+    requests: "10:0, 12:2, 15:5, 180:10, 185:12, 188:15, 20:20, 25:25",
+    head: "100"
+  },
+  { 
+    id: "streaming", 
+    label: "Streaming", 
+    requests: "10:0, 20:5, 30:10, 40:15, 50:20, 60:25, 70:30, 80:35",
+    head: "0"
+  },
+  { 
+    id: "boot", 
+    label: "OS Boot", 
+    requests: "5:0, 190:2, 10:5, 180:8, 15:12, 170:15, 20:20, 160:25",
+    head: "99"
+  }
+];
+
+export default function InputPanel({ onSimulate, onCompare, loading, externalRequests }) {
+  const [requests,  setRequests]  = useState(PRESETS[0].requests);
+  const [head,      setHead]      = useState(PRESETS[0].head);
   const [maxTrack,  setMaxTrack]  = useState("199");
   const [algorithm, setAlgorithm] = useState("fcfs");
   const [direction, setDirection] = useState("right");
 
-  const parseInputs = () => ({
-    requests: requests.split(",").map((s) => parseInt(s.trim(), 10)).filter((n) => !isNaN(n)),
-    head:     parseInt(head, 10),
-    maxTrack: parseInt(maxTrack, 10),
-    algorithm,
-    direction,
-  });
+  // Sync with external injections
+  useEffect(() => {
+    if (externalRequests) {
+      setRequests(prev => {
+        const list = prev.split(',').map(s => s.trim()).filter(Boolean);
+        if (!list.includes(externalRequests)) {
+          return prev ? `${prev}, ${externalRequests}` : externalRequests;
+        }
+        return prev;
+      });
+    }
+  }, [externalRequests]);
+
+  const applyPreset = (p) => {
+    setRequests(p.requests);
+    setHead(p.head);
+  };
+
+  const parseInputs = () => {
+    const rawReqs = requests.split(",").map((s) => s.trim()).filter(Boolean);
+    const parsedReqs = rawReqs.map((s) => {
+      if (s.includes(":")) {
+        const [track, arrival] = s.split(":").map((v) => parseInt(v.trim(), 10));
+        return { track: isNaN(track) ? 0 : track, arrivalTime: isNaN(arrival) ? 0 : arrival };
+      }
+      return { track: parseInt(s, 10), arrivalTime: 0 };
+    }).filter(r => !isNaN(r.track));
+
+    return {
+      requests: parsedReqs,
+      head:     parseInt(head, 10),
+      maxTrack: parseInt(maxTrack, 10),
+      algorithm,
+      direction,
+    };
+  };
 
   const labelStyle = {
     display: "block", marginBottom: 6,
@@ -53,6 +109,36 @@ export default function InputPanel({ onSimulate, onCompare, loading }) {
         </div>
       </div>
 
+      {/* Workload Presets */}
+      <div style={{ marginBottom: 20 }}>
+        <label style={labelStyle}>Workload Presets</label>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+          {PRESETS.map((p) => (
+            <button
+              key={p.id}
+              onClick={() => applyPreset(p)}
+              style={{
+                borderRadius: 20, border: "1px solid var(--border)",
+                padding: "4px 12px", fontSize: 11, fontWeight: 500,
+                color: "var(--text-secondary)", backgroundColor: "var(--bg-raised)",
+                cursor: "pointer", transition: "all 0.15s ease",
+                fontFamily: "inherit"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "var(--bg-subtle)";
+                e.currentTarget.style.color = "var(--text-primary)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "var(--bg-raised)";
+                e.currentTarget.style.color = "var(--text-secondary)";
+              }}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Disk Access Requests */}
       <div style={{ marginBottom: 20 }}>
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 6 }}>
@@ -60,9 +146,12 @@ export default function InputPanel({ onSimulate, onCompare, loading }) {
           <button
             onClick={() => {
               const max = parseInt(maxTrack, 10) || 199;
-              // Generate 6 to 10 random requests
               const count = Math.floor(Math.random() * 5) + 6;
-              const randomReqs = Array.from({ length: count }, () => Math.floor(Math.random() * (max + 1)));
+              const randomReqs = Array.from({ length: count }, () => {
+                const track = Math.floor(Math.random() * (max + 1));
+                const arrival = Math.floor(Math.random() * 50); // Random arrival up to 50
+                return `${track}:${arrival}`;
+              });
               setRequests(randomReqs.join(", "));
             }}
             style={{
@@ -84,14 +173,16 @@ export default function InputPanel({ onSimulate, onCompare, loading }) {
         </div>
         <textarea
           id="disk-requests-input"
-          rows={2}
+          rows={3}
           className="input-field"
           style={{ resize: "none", fontFamily: "monospace", fontSize: 13, lineHeight: 1.5 }}
-          placeholder="e.g. 98, 183, 37, 122, 14, 124, 65, 67"
+          placeholder="e.g. 98:0, 183:5, 37:10"
           value={requests}
           onChange={(e) => setRequests(e.target.value)}
         />
-        <p style={{ marginTop: 6, fontSize: 11, color: "var(--text-muted)" }}>Comma-separated track numbers</p>
+        <p style={{ marginTop: 6, fontSize: 11, color: "var(--text-muted)" }}>
+          Format: <strong>track:arrival</strong> (e.g. 98:0, 183:10)
+        </p>
       </div>
 
       {/* Head + Max Track */}
