@@ -58,7 +58,7 @@ const NeedleTrack = ({
     if (history.length < 2) return "";
     return history.map((pos, i) => {
       const x = getPos(pos);
-      return `${i === 0 ? 'M' : 'L'} ${x}% 50%`;
+      return `${i === 0 ? 'M' : 'L'} ${x} 50`;
     }).join(" ");
   }, [history, maxTrack]);
 
@@ -70,7 +70,7 @@ const NeedleTrack = ({
       {/* Legend */}
       <div className="absolute top-3 left-6 flex gap-6 pointer-events-none opacity-80 text-[11px] font-bold text-gray-400">
         <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-blue-500" /> ARRIVED</div>
-        <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full border-2 border-dashed border-orange-400/50" /> FUTURE</div>
+        <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-orange-500 opacity-60" /> FUTURE</div>
         <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-green-500" /> SERVICED</div>
       </div>
 
@@ -81,14 +81,20 @@ const NeedleTrack = ({
       />
       
       {/* Electric Trail */}
-      <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-30">
-        <defs>
-          <linearGradient id="trailGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#3b82f6" stopOpacity="0" />
-            <stop offset="100%" stopColor="#3b82f6" stopOpacity="1" />
-          </linearGradient>
-        </defs>
-        <path d={trailPath} fill="none" stroke="url(#trailGradient)" strokeWidth="2" className="glow-trail" />
+      <svg 
+        className="absolute inset-0 w-full h-full pointer-events-none z-0"
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+      >
+        <path 
+          d={trailPath} 
+          fill="none" 
+          stroke="#3b82f6" 
+          strokeWidth="1" 
+          strokeLinecap="round" 
+          strokeLinejoin="round" 
+          className="opacity-40"
+        />
       </svg>
 
       {/* Target Line */}
@@ -145,14 +151,16 @@ const NeedleTrack = ({
                 scale: req.track === currentTarget && isSimulating ? 1.3 : 1,
                 opacity: hasArrived ? 1 : 0.6,
                 backgroundColor: req.serviced ? '#22c55e' : 
-                                !hasArrived ? 'transparent' :
+                                !hasArrived ? '#f97316' : // Solid Muted Orange for Future
+                                isExtreme ? '#b91c1c' :   // Deep Blood Red for Extreme
+                                isStarving ? '#ef4444' :  // Red for Starving
                                 `rgb(${37 + starvationLevel * 200}, ${99 - starvationLevel * 80}, ${235 - starvationLevel * 200})`
               }}
               className={`absolute w-3 h-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 z-20 group/node 
                 ${req.serviced ? 'border-green-200 shadow-[0_0_8px_rgba(34,197,94,0.4)]' : 
-                  !hasArrived ? 'border-dashed border-orange-400/40' :
-                  isExtreme ? 'starving' :
-                  isStarving ? 'border-orange-500 shadow-[0_0_12px_rgba(249,115,22,0.6)]' :
+                  !hasArrived ? 'border-orange-600 opacity-50' : // Muted Future
+                  isExtreme ? 'starving border-red-400 shadow-[0_0_20px_#ef4444]' : // Intense Starving
+                  isStarving ? 'border-red-300 shadow-[0_0_12px_#ef4444]' :
                   req.track === currentTarget ? 'border-yellow-200 shadow-[0_0_12px_rgba(250,204,21,0.6)]' :
                   'border-blue-300 shadow-[0_0_8px_rgba(37,99,235,0.4)]'
                 }`}

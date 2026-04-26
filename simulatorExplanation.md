@@ -23,7 +23,7 @@ Welcome! If you are looking at this simulator for the first time, this guide wil
 Every dot on the line is a piece of data that someone (a user or a program) wants to read.
 
 *   **🔵 Blue Dots (Arrived):** These are active requests. The computer "knows" about them and they are waiting in the queue.
-*   **🟠 Dashed Circles (Future):** These are "Ghost" requests. They represent data that *will* be requested later in time. The computer cannot see them yet!
+*   **🟠 Orange Circles (Future):** These are "Ghost" requests. They represent data that *will* be requested later in time. The computer cannot see them yet!
 *   **🟢 Green Dots (Serviced):** Success! The disk head has reached this track and finished its job.
 
 ---
