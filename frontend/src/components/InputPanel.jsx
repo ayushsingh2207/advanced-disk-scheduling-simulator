@@ -5,6 +5,7 @@ const ALGORITHMS = [
   { id: "sstf",  label: "SSTF",   name: "Shortest Seek Time First", desc: "Always move to nearest track" },
   { id: "scan",  label: "SCAN",   name: "Elevator Algorithm",       desc: "Sweep back and forth across disk" },
   { id: "cscan", label: "C-SCAN", name: "Circular SCAN",            desc: "One-directional sweep, resets at end" },
+  { id: "hybrid", label: "Hybrid", name: "Dynamic Kernel Optimizer", desc: "Adaptive policy-switching (SSTF/SCAN)" },
 ];
 
 const PRESETS = [

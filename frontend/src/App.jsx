@@ -27,6 +27,8 @@ export default function App() {
   const [isThinking, setIsThinking] = useState(false);
   const [reasoning, setReasoning] = useState("");
   const [ripples, setRipples] = useState([]);
+  const [activePolicy, setActivePolicy] = useState("");
+  const [currentStep, setCurrentStep] = useState(-1);
   
   const simIntervalRef = useRef(null);
 
@@ -43,6 +45,7 @@ export default function App() {
       if (target < current) return "Cycle complete. Jumping back to start...";
       return `Cycling ${direction} for uniform service...`;
     }
+    if (a === 'hybrid') return `[Policy: ${activePolicy}] Selecting next optimal target...`;
     return "Analyzing optimal path...";
   };
 
@@ -58,6 +61,8 @@ export default function App() {
     setServicedIndices(new Set());
     setHistory([]);
     setRipples([]);
+    setActivePolicy("");
+    setCurrentStep(-1);
     if (simIntervalRef.current) clearInterval(simIntervalRef.current);
 
     try {
@@ -79,6 +84,10 @@ export default function App() {
           const newPos = data.sequence[step];
           const prevPos = step > 0 ? data.sequence[step - 1] : data.head;
           
+          if (data.policyLog) {
+            setActivePolicy(data.policyLog[step] || "");
+          }
+          
           // 1. Thinking Phase
           setIsThinking(true);
           const currentDir = newPos >= prevPos ? "right" : "left";
@@ -87,6 +96,7 @@ export default function App() {
           setTimeout(() => {
             // 2. Move Phase
             setIsThinking(false);
+            setCurrentStep(step);
             setCurrentHeadPos(newPos);
             setCurrentTarget(newPos);
             setHistory(prev => [...prev, newPos]);
@@ -176,6 +186,7 @@ export default function App() {
                 reasoning={reasoning}
                 isThinking={isThinking}
                 ripples={ripples}
+                activePolicy={activePolicy}
               />
             </div>
             <div className="card bg-gray-900/50 border-gray-800 p-5 overflow-hidden h-64 flex flex-col">
@@ -222,7 +233,7 @@ export default function App() {
             )}
 
             {result ? (
-              <ResultsPanel data={result} mode={mode} />
+              <ResultsPanel data={result} mode={mode} currentStep={currentStep} />
             ) : (
               <div className="animate-fade-in" style={{
                 display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
@@ -275,9 +286,9 @@ export default function App() {
           display: "flex", alignItems: "center", justifyContent: "space-between",
           flexWrap: "wrap", gap: 12
         }}>
-          <span style={{ fontSize: 12, color: "var(--text-muted)" }}>DiskSim</span>
+          <span style={{ fontSize: 12, color: "var(--text-muted)" }}>Advanced DiskSim</span>
           <span style={{ fontSize: 12, color: "var(--text-muted)" }}>
-            Advanced Disk Scheduling Simulator · Operating Systems Project
+            Advanced Disk Scheduling Simulator · Professional OS Analytics
           </span>
           <div style={{ display: "flex", gap: 16 }}>
             {["FCFS", "SSTF", "SCAN", "C-SCAN"].map((a) => (

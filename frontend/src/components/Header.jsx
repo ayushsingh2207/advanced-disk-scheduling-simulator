@@ -50,8 +50,8 @@ export default function Header({ dark, onToggleDark }) {
               letterSpacing: "-0.02em", whiteSpace: "nowrap",
               color: "var(--text-primary)"
             }}>
-              Disk Scheduling{" "}
-              <span style={{ color: "var(--text-muted)" }}>Simulator</span>
+              Advanced Disk{" "}
+              <span style={{ color: "var(--text-muted)" }}>Scheduling Simulator</span>
             </h1>
           </div>
 
@@ -60,12 +60,12 @@ export default function Header({ dark, onToggleDark }) {
 
           {/* ── Description ── */}
           <p style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.6 }}>
-            Visualize and compare{" "}
+            A high-fidelity analytical engine to visualize and compare{" "}
             <strong style={{ fontWeight: 600, color: "var(--text-primary)" }}>FCFS</strong>,{" "}
             <strong style={{ fontWeight: 600, color: "var(--text-primary)" }}>SSTF</strong>,{" "}
             <strong style={{ fontWeight: 600, color: "var(--text-primary)" }}>SCAN</strong>, and{" "}
             <strong style={{ fontWeight: 600, color: "var(--text-primary)" }}>C-SCAN</strong>{" "}
-            disk scheduling algorithms with interactive graphs and real-time performance metrics.
+            with neural path tracing and real-time intensity heatmaps.
           </p>
 
         </div>

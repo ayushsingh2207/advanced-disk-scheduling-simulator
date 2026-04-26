@@ -2,11 +2,12 @@ const fcfs = require("../algorithms/fcfs");
 const sstf = require("../algorithms/sstf");
 const scan = require("../algorithms/scan");
 const cscan = require("../algorithms/cscan");
+const hybrid = require("../algorithms/hybrid");
 const computeMetrics = require("../utils/metrics");
 const getAIInsights = require("../utils/aiAnalyzer");
 
 // Map of algorithm names to their functions
-const ALGORITHMS = { fcfs, sstf, scan, cscan };
+const ALGORITHMS = { fcfs, sstf, scan, cscan, hybrid };
 
 /**
  * POST /api/simulate
@@ -72,6 +73,7 @@ exports.simulate = (req, res) => {
       maxTrack,
       sequence: result.sequence,
       seekTimes: result.seekTimes,
+      policyLog: result.policyLog,
       ...metrics,
       aiInsights: getAIInsights(algorithm, metrics),
     });
@@ -122,6 +124,7 @@ exports.compare = (req, res) => {
       results[name.toUpperCase()] = {
         sequence: result.sequence,
         seekTimes: result.seekTimes,
+        policyLog: result.policyLog,
         ...metrics,
         aiInsights: getAIInsights(name, metrics),
       };

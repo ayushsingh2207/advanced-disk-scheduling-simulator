@@ -13,7 +13,8 @@ const NeedleTrack = ({
   history = [], 
   reasoning = "", 
   isThinking = false, 
-  ripples = [] 
+  ripples = [],
+  activePolicy = ""
 }) => {
   const controls = useAnimation();
   const [justServiced, setJustServiced] = useState(false);
@@ -224,6 +225,12 @@ const NeedleTrack = ({
 
       {/* Info Bar */}
       <div className="absolute top-3 right-6 flex items-center gap-4">
+        {activePolicy && (
+          <div className="flex items-center gap-1.5 px-2 py-0.5 bg-violet-900/40 border border-violet-500/50 rounded-full shadow-[0_0_10px_rgba(139,92,246,0.2)]">
+            <div className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
+            <span className="text-[9px] font-black text-violet-200 uppercase tracking-tighter">POLICY: {activePolicy}</span>
+          </div>
+        )}
         <span className="text-[11px] font-mono text-gray-400">SIM_TIME: {Math.round(simTime)}</span>
         <span className={`text-[11px] font-mono font-bold uppercase tracking-widest ${isSimulating ? 'text-green-500' : 'text-red-500'}`}>
           {isThinking ? '• THINKING' : isSimulating ? '• ACTIVE' : '• IDLE'}

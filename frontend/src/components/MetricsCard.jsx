@@ -14,13 +14,13 @@ export default function MetricsCard({ icon, label, value, unit }) {
         display: "flex", alignItems: "center", justifyContent: "center",
         width: 32, height: 32, borderRadius: 8,
         backgroundColor: "var(--bg-subtle)", color: "var(--text-secondary)", fontSize: 14,
-        flexShrink: 0, alignSelf: "flex-start"
+        flexShrink: 0, alignSelf: "center"
       }}>
         {icon}
       </div>
 
       {/* Value */}
-      <div>
+      <div style={{ textAlign: "center" }}>
         <p style={{ fontSize: 22, fontWeight: 600, lineHeight: 1, color: "var(--text-primary)", letterSpacing: "-0.02em" }}>
           {typeof value === "number" ? value.toLocaleString() : value}
         </p>
@@ -32,7 +32,7 @@ export default function MetricsCard({ icon, label, value, unit }) {
       </div>
 
       {/* Label + bar */}
-      <div style={{ marginTop: "auto" }}>
+      <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", alignItems: "center" }}>
         <div style={{ height: 2, width: 24, borderRadius: 9999, backgroundColor: "var(--text-secondary)", marginBottom: 8 }} />
         <p style={{ fontSize: 11, fontWeight: 500, color: "var(--text-secondary)" }}>{label}</p>
       </div>
